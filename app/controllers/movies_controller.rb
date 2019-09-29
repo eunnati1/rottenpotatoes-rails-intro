@@ -1,8 +1,6 @@
 class MoviesController < ApplicationController
-
-  def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date)
-  end
+  helper_method :hilight
+  
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -11,7 +9,16 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    session[:order] = params[:order] unless params[:order].nil?
+    if (params[:order].nil? && !session[:order].nil?)
+      redirect_to movies_path("order" => session[:order])
+    elsif !params[:order].nil?
+        return @movies = Movie.all.order(session[:order])
+    elsif  !session[:order].nil?
+      redirect_to movies_path("order" => session[:order])
+    else
+      return @movies = Movie.all
+    end
   end
 
   def new
@@ -43,3 +50,11 @@ class MoviesController < ApplicationController
   end
 
 end
+
+def hilight(column)
+    if(session[:order].to_s == column)
+      return 'hilite'
+    else
+      return nil
+    end
+  end
