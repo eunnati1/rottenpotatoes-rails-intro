@@ -10,6 +10,9 @@ helper_method :checked_ratings?
   def index 
     @all_ratings = ['G','PG','PG-13','R']
     
+    session[:ratings] = params[:ratings] unless params[:ratings].nil?
+    session[:order] = params[:order] unless params[:order].nil?
+    
     ### FOR QUERING BASED ON CHECKED RATINGS
       if !params[:ratings].nil?
         array_ratings = params[:ratings].keys
@@ -27,6 +30,10 @@ helper_method :checked_ratings?
       return @movies = Movie.all
     end
    
+   if session[:ratings] != params[:ratings] || session[:sort] != params[:sort]
+     flash.keep
+      redirect_to movies_path(ratings: session[:ratings], sort: session[:sort])
+    end
    
   end
 
