@@ -1,4 +1,5 @@
 class MoviesController < ApplicationController
+helper_method :checked_ratings?
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -9,13 +10,24 @@ class MoviesController < ApplicationController
   def index 
     @all_ratings = ['G','PG','PG-13','R']
     
-    if (params[:order].nil?)
+    ### FOR QUERING BASED ON CHECKED RATINGS
+      if !params[:ratings].nil?
+        array_ratings = params[:ratings].keys
+        return @movies = Movie.where(rating: array_ratings).order(params[:order])
+      else
+        return @movies = Movie.all
+      end
+   
+   #FOR SORTING OF MOVIE TITLE AND RELEASE DATE
+   if (params[:order].nil?)
       redirect_to movies_path("order" => params[:order])
     elsif !params[:order].nil?
         return@movies = Movie.order(params[:order])
     else
       return @movies = Movie.all
     end
+   
+   
   end
 
   def new
@@ -44,6 +56,12 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
+  end
+
+def checked_ratings?(rating)
+    checked_ratings = params[:ratings]
+    return true if checked_ratings.nil?
+    checked_ratings.include? rating
   end
 
 end
