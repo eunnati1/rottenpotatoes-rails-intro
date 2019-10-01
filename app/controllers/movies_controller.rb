@@ -1,6 +1,4 @@
 class MoviesController < ApplicationController
-  helper_method :hilight
-  
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -8,14 +6,11 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  def index
-    session[:order] = params[:order] unless params[:order].nil?
-    if (params[:order].nil? && !session[:order].nil?)
-      redirect_to movies_path("order" => session[:order])
+  def index 
+    if (params[:order].nil?)
+      redirect_to movies_path("order" => params[:order])
     elsif !params[:order].nil?
-        return @movies = Movie.all.order(session[:order])
-    elsif  !session[:order].nil?
-      redirect_to movies_path("order" => session[:order])
+        return@movies = Movie.order(params[:order])
     else
       return @movies = Movie.all
     end
@@ -51,10 +46,5 @@ class MoviesController < ApplicationController
 
 end
 
-def hilight(column)
-    if(session[:order].to_s == column)
-      return 'hilite'
-    else
-      return nil
-    end
-  end
+
+  
