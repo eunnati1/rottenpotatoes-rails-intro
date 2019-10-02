@@ -8,6 +8,8 @@ helper_method :checked_ratings?
   end
 
   def index 
+    @all_ratings = ['G','PG','PG-13','R']
+    
    
    #FOR SORTING OF MOVIE TITLE AND RELEASE DATE
    if (params[:order].nil?)
@@ -17,7 +19,6 @@ helper_method :checked_ratings?
     else
       return @movies = Movie.all
     end
-  
    
   end
 
