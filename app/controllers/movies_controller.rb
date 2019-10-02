@@ -74,5 +74,4 @@ helper_method :select_rating?
     redirect_to movies_path
   end
 
-
 end
