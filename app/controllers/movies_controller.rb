@@ -1,5 +1,9 @@
 class MoviesController < ApplicationController
-helper_method :checked_ratings?
+helper_method :select_rating?
+
+  def movie_params
+    params.require(:movie).permit(:title, :rating, :description, :release_date)
+  end
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -8,22 +12,38 @@ helper_method :checked_ratings?
   end
 
   def index 
-    @all_ratings = ['G','PG','PG-13','R']
-    
+   @all_ratings = ['G','PG','PG-13','R']
    
-   #FOR SORTING OF MOVIE TITLE AND RELEASE DATE
-   if (params[:order].nil?)
-      redirect_to movies_path("order" => params[:order])
-    elsif !params[:order].nil?
-        return@movies = Movie.order(params[:order])
+    session[:order] = params[:order] unless params[:order].nil?
+    session[:ratings] = params[:ratings] unless params[:ratings].nil?
+    
+
+    if (params[:ratings].nil?) || (params[:order].nil?)
+      redirect_to movies_path("ratings" => session[:ratings], "order" => session[:order])
+    elsif !params[:ratings].nil? || !params[:order].nil?
+      if !params[:ratings].nil?
+        array_ratings = params[:ratings].keys
+        return @movies = Movie.where(rating: array_ratings).order(session[:order])
+      else
+        return @movies = Movie.order(params[:order])
+      end
+    elsif !session[:ratings].nil? || !session[:order].nil?
+      redirect_to movies_path("ratings" => session[:ratings], "order" => session[:order])
     else
       return @movies = Movie.all
     end
-   
   end
 
   def new
     # default: render 'new' template
+  end
+
+  def select_rating?(rating)
+    select_rating = params[:ratings]
+     if select_rating.nil?
+       return true
+     end
+    select_rating.include? rating
   end
 
   def create
@@ -50,10 +70,5 @@ helper_method :checked_ratings?
     redirect_to movies_path
   end
 
-def checked_ratings?(rating)
-    checked_ratings = params[:ratings]
-    return true if checked_ratings.nil?
-    checked_ratings.include? rating
-  end
 
 end
