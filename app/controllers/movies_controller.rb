@@ -12,7 +12,7 @@ helper_method :select_rating?
   end
 
   def index 
-   @all_ratings = ['G','PG','PG-13','R']
+   @all_ratings = Movie.all_ratings
    
     session[:order] = params[:order] unless params[:order].nil?
     session[:ratings] = params[:ratings] unless params[:ratings].nil?
@@ -20,18 +20,21 @@ helper_method :select_rating?
 
     if (params[:ratings].nil?) || (params[:order].nil?)
       redirect_to movies_path("ratings" => session[:ratings], "order" => session[:order])
+      
     elsif !params[:ratings].nil? || !params[:order].nil?
       if !params[:ratings].nil?
-        array_ratings = params[:ratings].keys
-        return @movies = Movie.where(rating: array_ratings).order(session[:order])
+        return @movies = Movie.where(rating: params[:ratings].keys).order(session[:order])
       else
         return @movies = Movie.order(params[:order])
       end
+      
     elsif !session[:ratings].nil? || !session[:order].nil?
       redirect_to movies_path("ratings" => session[:ratings], "order" => session[:order])
+      
     else
       return @movies = Movie.all
     end
+    
   end
 
   def new
