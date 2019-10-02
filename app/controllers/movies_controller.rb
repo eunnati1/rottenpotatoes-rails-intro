@@ -1,6 +1,5 @@
 class MoviesController < ApplicationController
-  
-  
+helper_method :checked_ratings?
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -8,8 +7,9 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  def index
-    #FOR SORTING OF MOVIE TITLE AND RELEASE DATE
+  def index 
+   
+   #FOR SORTING OF MOVIE TITLE AND RELEASE DATE
    if (params[:order].nil?)
       redirect_to movies_path("order" => params[:order])
     elsif !params[:order].nil?
@@ -17,6 +17,8 @@ class MoviesController < ApplicationController
     else
       return @movies = Movie.all
     end
+  
+   
   end
 
   def new
@@ -45,6 +47,12 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
+  end
+
+def checked_ratings?(rating)
+    checked_ratings = params[:ratings]
+    return true if checked_ratings.nil?
+    checked_ratings.include? rating
   end
 
 end
