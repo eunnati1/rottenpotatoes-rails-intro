@@ -29,6 +29,7 @@ helper_method :select_rating?
       end
       
     elsif !session[:ratings].nil? || !session[:order].nil?
+      flash.keep
       redirect_to movies_path("ratings" => session[:ratings], "order" => session[:order])
       
     else
