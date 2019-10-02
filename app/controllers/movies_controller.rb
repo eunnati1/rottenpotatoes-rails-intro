@@ -7,6 +7,8 @@ helper_method :checked_ratings?
     # will render app/views/movies/show.<extension> by default
   end
 
+
+
   def index 
     @all_ratings = ['G','PG','PG-13','R']
     
