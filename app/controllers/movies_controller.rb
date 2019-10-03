@@ -18,7 +18,7 @@ helper_method :select_rating?
     session[:ratings] = params[:ratings] unless params[:ratings].nil?
     
 
-    if (params[:ratings].nil?) || (params[:order].nil?)
+     if (params[:ratings].nil? && !session[:ratings].nil?) || (params[:order].nil? && !session[:order].nil?)
       redirect_to movies_path("ratings" => session[:ratings], "order" => session[:order])
       
     elsif !params[:ratings].nil? || !params[:order].nil?
